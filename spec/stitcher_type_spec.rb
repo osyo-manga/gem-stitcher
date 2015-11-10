@@ -93,5 +93,17 @@ describe Stitcher::Type do
 				expect(0.0.type <= type).to eq true
 			end
 		end
+		describe "+type" do
+			it "type === +type" do
+				expect(0.type === +Numeric).to eq true
+				expect(0.0.type === +Numeric).to eq true
+				expect("".type === +Numeric).to eq false
+			end
+			it "+type === type" do
+				expect(+Numeric === 0).to eq true
+				expect(+Numeric === 0.0).to eq true
+				expect(+Numeric === "").to eq false
+			end
+		end
 	end
 end

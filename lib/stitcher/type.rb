@@ -11,6 +11,10 @@ module Stitcher
 		def !
 			Stitcher.type_not self
 		end
+
+		def +@
+			Stitcher.type_plus_at self
+		end
 	end
 end
 
@@ -50,7 +54,7 @@ module Stitcher
 			@comp = lambda do |other, op|
 				# change operator "<" to ">".
 				return other.comp(klass, op.to_s.tr("<>", "><"))  if other.class == Type
-				return self.comp(klass, "==") if op === :===
+				return self.comp(klass, :===) if op.to_sym == :===
 				klass.__send__ op, other.classtype
 			end unless block_given?
 		end
@@ -91,4 +95,13 @@ module Stitcher
 		end
 	end
 	module_function :type_not
+
+	def type_plus_at a
+		Type.new do |other, op|
+			next a.type >= other if op.to_sym == :===
+			a.type.__send__ op, other.type
+		end
+	end
+	module_function :type_plus_at
 end
+
