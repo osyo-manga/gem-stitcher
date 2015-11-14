@@ -54,7 +54,7 @@ module Stitcher
 			@comp = lambda do |other, op|
 				# change operator "<" to ">".
 				return other.comp(klass, op.to_s.tr("<>", "><"))  if other.class == Type
-				return self.comp(klass, :===) if op.to_sym == :===
+				return self.comp(other, :==) if op.to_sym == :===
 				klass.__send__ op, other.classtype
 			end unless block_given?
 		end

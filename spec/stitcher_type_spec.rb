@@ -45,6 +45,10 @@ describe Stitcher::Type do
 				expect(Fixnum.type > 1).to eq false
 				expect(Numeric.type > 1.type).to eq true
 			end
+			it "#===" do
+				expect(Fixnum.type === 1).to eq true
+				expect(Numeric.type === 1.type).to eq false
+			end
 		end
 		describe "or" do
 			let(:type){ Numeric.type | String | Float }
