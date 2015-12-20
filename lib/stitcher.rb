@@ -16,11 +16,11 @@ module Stitcher
 			mem = instance_method(name)
 			return stitcher_register(name, sig, &proc { |*args| mem.bind(self).call *args })
 		end
-		stitcher_concept_method(name)[sig] = block
+		stitcher_concept_method_table(name)[sig] = block
 		self_ = self
 		
 		define_method name do |*args|
-			_, method = self_.stitcher_concept_method(name).find {|sig, _| sig === args}
+			_, method = self_.stitcher_concept_method_table(name).find {|sig, _| sig === args}
 			return super(*args) unless method
 			instance_exec *args, &method
 		end
