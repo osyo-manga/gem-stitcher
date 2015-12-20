@@ -1,3 +1,10 @@
-require_relative "./adaptor.rb"
-require_relative "./type/core_ext.rb"
-
+module StitcherArrayEx
+	refine Array do
+		def === other
+			each_with_index do |it, index|
+				return false unless it === other[index]
+			end
+			true
+		end
+	end
+end
