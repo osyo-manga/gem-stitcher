@@ -6,8 +6,10 @@ class X
 	def initialize value
 		@value = value
 	end
+	# Register method argument types.
 	stitcher_register :initialize, [Fixnum]
 
+	# Define multi methods.
 	def plus a
 		@value + a
 	end
@@ -22,7 +24,10 @@ end
 x = X.new 10
 # x = X.new "10"		# Error: No match method.
 
+# Call X#plus(Fixnum)
 p x.plus -3
 # => 7
+
+# Call X#plus(String)
 p x.plus "42"
 # => 57
