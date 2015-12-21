@@ -13,6 +13,11 @@ class X
 	end
 	stitcher_register :plus, [Fixnum]
 
+	def plus a, b
+		@value + a + b
+	end
+	stitcher_register :plus, [Fixnum, Fixnum]
+
 	def plus a
 		@value + a.to_i
 	end
@@ -29,6 +34,9 @@ describe "Stitcher::Register" do
 
 	it "X#plus(Fixnum)" do
 		expect(x.plus 42).to eq 52
+	end
+	it "X#plus(Fixnum, Fixnum)" do
+		expect(x.plus 42, 2).to eq 54
 	end
 	it "X#plus(String)" do
 		expect(x.plus "42").to eq 52
