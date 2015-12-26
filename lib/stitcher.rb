@@ -28,8 +28,7 @@ module Stitcher
 
 	def stitcher_writer **opt
 		opt.each { |name, type|
-			define_method "#{name}=" do |var|
-				raise "No match type." unless type === var
+			stitcher_register "#{name}=", [type] do |var|
 				instance_variable_set "@#{name}", var
 			end
 		}
