@@ -6,22 +6,27 @@ class X
 	extend Stitcher
 
 	# Define accessor with variable type(Class).
-	stitch_accessor name: String, age: Integer
+	stitcher_accessor name: String, age: Integer
+
+	def set name, age
+		self.name = name
+		self.age  = age
+	end
+	# Stitch method with Argument types.
+	stitch :set, [String, Integer]
 
 	# Define "set" method with Argument types.
 	# set(String, Integer)
-	define_stitch(:set, name: String, age: Integer){
+	stitcher_define_method(:set, age: Integer, name: String){
 		self.name = name
 		self.age  = age
 	}
 
-	# Define other "set" method.
-	# set(Integer, String)
-	define_stitch(:set, age: Integer, name: String){
-		# Call set(String, Integer)
-		set name, age
+	# Define "set" method.
+	stitch.set(ary: [String, Integer]){
+		set *ary
 	}
-	
+
 	def print
 		p "name:#{name} age:#{age}"
 	end
@@ -39,4 +44,8 @@ x.print
 x.set 14, "mado"
 x.print
 # => "name:mado age:14"
+
+x.set ["homu", 14]
+x.print
+# => "name:homu age:14"
 

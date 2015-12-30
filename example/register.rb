@@ -1,24 +1,24 @@
 require "stitcher"
 
 class X
-	extend Stitcher
+	extend Stitcher::Register
 
 	def initialize value
 		@value = value
 	end
 	# Register method argument types.
-	stitch :initialize, [Fixnum]
+	stitcher_register :initialize, [Fixnum]
 
 	# Define multi methods.
 	def plus a
 		@value + a
 	end
-	stitch :plus, [Fixnum]
+	stitcher_register :plus, [Fixnum]
 
 	def plus a
 		@value + a.to_i
 	end
-	stitch :plus, [String]
+	stitcher_register :plus, [String]
 end
 
 x = X.new 10

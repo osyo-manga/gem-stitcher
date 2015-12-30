@@ -1,12 +1,12 @@
-require_relative "./stitch.rb"
-require_relative "./accessor.rb"
+require_relative "./register"
+require_relative "./accessor"
 
-module Stitcher module DefineStitch
-	include Stitcher::Stitch
+module Stitcher module DefineMethod
+	include Stitcher::Register
 	include Stitcher::Accessor
 
-	def define_stitch name, **opt, &block
-		stitch name, opt.values do |*args|
+	def stitcher_define_method name, **opt, &block
+		stitcher_register name, opt.values do |*args|
 			self_ = self
 			obj = Object.new
 			obj.extend(Module.new{

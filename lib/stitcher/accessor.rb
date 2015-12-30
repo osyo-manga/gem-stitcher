@@ -1,21 +1,20 @@
-require_relative "../stitcher"
-require_relative "./stitch"
+require_relative "./register"
 
 using Stitcher
 
 module Stitcher module Accessor
-	include Stitcher::Stitch
+	include Stitcher::Register
 
-	def stitch_writer **opt
+	def stitcher_writer **opt
 		opt.each { |name, type|
-			stitch "#{name}=", [type] do |var|
+			stitcher_register "#{name}=", [type] do |var|
 				instance_variable_set "@#{name}", var
 			end
 		}
 	end
 
-	def stitch_accessor **opt
+	def stitcher_accessor **opt
 		attr_reader *opt.keys
-		stitch_writer opt
+		stitcher_writer opt
 	end
 end end

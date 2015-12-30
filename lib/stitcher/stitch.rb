@@ -1,25 +1,17 @@
-require_relative "./core_ext"
-
-using StitcherArrayEx
-
+require_relative "./register"
+require_relative "./define_method"
 
 module Stitcher module Stitch
-	def stitcher_stitch_method_table name
-		instance_eval { @stitcher_stitch_method_table ||= {}; @stitcher_stitch_method_table[name] ||= {} }
-	end
+	include Stitcher::Register
+	include Stitcher::DefineMethod
 
-	def stitch name, sig, &block
-		if !block_given?
-			mem = instance_method(name)
-			return stitch(name, sig, &proc { |*args| mem.bind(self).call *args })
-		end
-		stitcher_stitch_method_table(name)[sig] = block
+	def stitch *args, &block
+		return stitcher_register *args, &block unless args.empty?
 		self_ = self
-		
-		define_method name do |*args|
-			_, method = self_.stitcher_stitch_method_table(name).find {|sig, _| sig === args}
-			return super(*args) unless method
-			instance_exec *args, &method
+		Class.new do |klass|
+			define_singleton_method(:method_missing) do |name, sig, &block|
+				self_.stitcher_define_method name, sig, &block
+			end
 		end
 	end
 end end
