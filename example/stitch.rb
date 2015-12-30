@@ -7,18 +7,18 @@ class X
 		@value = value
 	end
 	# Register method argument types.
-	stitcher_register :initialize, [Fixnum]
+	stitch :initialize, [Fixnum]
 
 	# Define multi methods.
 	def plus a
 		@value + a
 	end
-	stitcher_register :plus, [Fixnum]
+	stitch :plus, [Fixnum]
 
 	def plus a
 		@value + a.to_i
 	end
-	stitcher_register :plus, [String]
+	stitch :plus, [String]
 end
 
 x = X.new 10
