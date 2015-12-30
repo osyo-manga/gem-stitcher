@@ -2,8 +2,6 @@ require_relative "./core_ext"
 
 using StitcherArrayEx
 
-p [String, String] === ["", ""]
-
 
 module Stitcher module Stitch
 	def stitcher_stitch_method_table name

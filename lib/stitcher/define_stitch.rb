@@ -10,13 +10,13 @@ module Stitcher module DefineStitch
 			self_ = self
 			obj = Object.new
 			obj.extend(Module.new{
-				extend Stitcher::Accessor
-				stitcher_accessor opt
+				private
+				attr_reader *opt.keys
 			})
 			obj.instance_eval do
 				opt.each_with_index { |data, index|
 					name, type = data
-					__send__ "#{name}=", args[index]
+					instance_variable_set "@#{name}", args[index]
 				}
 				define_singleton_method :method_missing do |name, *args, &block|
 					self_.__send__ name, *args, &block

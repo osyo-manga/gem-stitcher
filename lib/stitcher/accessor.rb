@@ -6,7 +6,7 @@ using Stitcher
 module Stitcher module Accessor
 	include Stitcher::Stitch
 
-	def stitcher_writer **opt
+	def stitch_writer **opt
 		opt.each { |name, type|
 			stitch "#{name}=", [type] do |var|
 				instance_variable_set "@#{name}", var
@@ -14,8 +14,8 @@ module Stitcher module Accessor
 		}
 	end
 
-	def stitcher_accessor **opt
+	def stitch_accessor **opt
 		attr_reader *opt.keys
-		stitcher_writer opt
+		stitch_writer opt
 	end
 end end
