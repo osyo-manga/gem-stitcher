@@ -26,36 +26,43 @@ Or install it yourself as:
 require "stitcher"
 
 class X
+	# Using stitcher library in class.
 	extend Stitcher
 
-	def initialize value
-		@value = value
-	end
-	# Register method argument types.
-	stitcher_register :initialize, [Fixnum]
+	# Define accessor with variable type(Class).
+	stitch_accessor name: String, age: Integer
 
-	# Define multi methods.
-	def plus a
-		@value + a
-	end
-	stitcher_register :plus, [Fixnum]
+	# Define "set" method with Argument types.
+	# set(String, Integer)
+	define_stitch(:set, name: String, age: Integer){
+		self.name = name
+		self.age  = age
+	}
 
-	def plus a
-		@value + a.to_i
+	# Define other "set" method.
+	# set(Integer, String)
+	define_stitch(:set, age: Integer, name: String){
+		# Call set(String, Integer)
+		set name, age
+	}
+	
+	def print
+		p "name:#{name} age:#{age}"
 	end
-	stitcher_register :plus, [String]
 end
 
-x = X.new 10
-# x = X.new "10"		# Error: No match method.
+x = X.new
+x.name = "homu"
+x.age  = 14
+# x.age = 14.0		# Error: No match method.
 
-# Call X#plus(Fixnum)
-p x.plus -3
-# => 7
+x.set "mami", 15
+x.print
+# => "name:mami age:15"
 
-# Call X#plus(String)
-p x.plus "42"
-# => 57
+x.set 14, "mado"
+x.print
+# => "name:mado age:14"
 ```
 
 ## Development
