@@ -1,10 +1,9 @@
 require "stitcher"
 
+# Using stitcher library.
+using Stitcher
 
 class X
-	# Using stitcher library in class.
-	extend Stitcher
-
 	# Define accessor with variable type(Class).
 	stitcher_accessor name: String, age: Integer
 

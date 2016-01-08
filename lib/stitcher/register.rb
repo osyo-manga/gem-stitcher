@@ -4,22 +4,25 @@ using StitcherArrayEx
 
 
 module Stitcher module Register
-	def stitcher_method_table name
-		instance_eval { @stitcher_method_table ||= {}; @stitcher_method_table[name] ||= {} }
+	def self.stitcher_method_table self_, name
+		self_.instance_eval { @stitcher_method_table ||= {}; @stitcher_method_table[name] ||= {} }
 	end
 
-	def stitcher_register name, sig, &block
+	def self.stitcher_register self_, name, sig, &block
 		if !block_given?
-			mem = instance_method(name)
-			return stitcher_register(name, sig, &proc { |*args| mem.bind(self).call *args })
+			mem = self_.instance_method(name)
+			return Register.stitcher_register(self_, name, sig, &proc { |*args| mem.bind(self).call *args })
 		end
-		stitcher_method_table(name)[sig] = block
-		self_ = self
+		Register.stitcher_method_table(self_, name)[sig] = block
 		
-		define_method name do |*args|
-			_, method = self_.stitcher_method_table(name).find {|sig, _| sig === args}
+		self_.send :define_method, name do |*args|
+			_, method = Register.stitcher_method_table(self_, name).find {|sig, _| sig === args}
 			return super(*args) unless method
 			instance_exec *args, &method
 		end
+	end
+
+	def stitcher_register name, sig, &block
+		Register.stitcher_register(self, name, sig, &block)
 	end
 end end

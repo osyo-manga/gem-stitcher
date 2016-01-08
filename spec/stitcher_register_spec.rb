@@ -1,8 +1,10 @@
 require_relative './spec_helper'
 
 
+using Stitcher
+
 class Super
-	extend Stitcher
+# 	extend Stitcher
 
 	def plus a, b
 		"#{a}:#{b}"
@@ -27,10 +29,9 @@ class X < Super
 	end
 	stitcher_register :plus, [Fixnum, Fixnum]
 
-	def plus a
+	stitcher_register :plus, [String] do |a|
 		@value + a.to_i
 	end
-	stitcher_register :plus, [String]
 end
 
 describe "Stitcher::Register" do

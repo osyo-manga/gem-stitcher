@@ -5,6 +5,15 @@ require_relative "./stitcher/accessor"
 require_relative "./stitcher/stitch"
 
 module Stitcher
+	include Register
 	include Accessor
 	include Stitch
+	include DefineMethod
+
+	refine Module do
+		include Stitcher
+# 		Stitcher.instance_methods.each do |name|
+# 			alias_method name, name
+# 		end
+	end
 end

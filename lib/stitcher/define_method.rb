@@ -6,7 +6,7 @@ module Stitcher module DefineMethod
 	include Stitcher::Accessor
 
 	def stitcher_define_method name, **opt, &block
-		stitcher_register name, opt.values do |*args|
+		Register.stitcher_register self, name, opt.values do |*args|
 			self_ = self
 			obj = Object.new
 			obj.extend(Module.new{

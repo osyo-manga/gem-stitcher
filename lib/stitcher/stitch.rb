@@ -5,13 +5,19 @@ module Stitcher module Stitch
 	include Stitcher::Register
 	include Stitcher::DefineMethod
 
-	def stitch *args, &block
-		return stitcher_register *args, &block unless args.empty?
-		self_ = self
-		Class.new do |klass|
-			define_singleton_method(:method_missing) do |name, sig, &block|
-				self_.stitcher_define_method name, sig, &block
-			end
+	class Definer < BasicObject
+		def initialize obj
+			@obj = obj
 		end
+
+		def method_missing name, sig, &block
+			DefineMethod.instance_method(:stitcher_define_method).bind(@obj).(name, sig, &block)
+# 			@obj.stitcher_define_method name, sig, &block
+		end
+	end
+
+	def stitch *args, &block
+		return Definer.new self if args.empty?
+		Register.stitcher_register self, *args, &block
 	end
 end end
