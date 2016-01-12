@@ -15,7 +15,7 @@ class X
 	stitch :set, [String, Integer]
 
 	# Define "set" method with Argument types.
-	# set(String, Integer)
+	# set(Integer, String)
 	stitcher_define_method(:set, age: Integer, name: String){
 		self.name = name
 		self.age  = age
