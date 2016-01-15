@@ -3,7 +3,7 @@ require_relative "./register"
 using Stitcher
 
 module Stitcher module Accessor
-# 	include Stitcher::Register
+	include Register
 
 	def stitcher_writer **opt
 		opt.each { |name, type|

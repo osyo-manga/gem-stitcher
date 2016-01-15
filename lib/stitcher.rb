@@ -4,12 +4,12 @@ require_relative "./stitcher/define_method"
 require_relative "./stitcher/accessor"
 require_relative "./stitcher/stitch"
 require_relative "./stitcher/class_operator"
+require_relative "./stitcher/require"
 
 module Stitcher
-	include Register
 	include Accessor
 	include Stitch
-	include DefineMethod
+	include Require
 
 	refine Module do
 		include Stitcher

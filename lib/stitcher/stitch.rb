@@ -2,8 +2,8 @@ require_relative "./register"
 require_relative "./define_method"
 
 module Stitcher module Stitch
-	include Stitcher::Register
-	include Stitcher::DefineMethod
+	include Register
+	include DefineMethod
 
 	class Definer < BasicObject
 		def initialize obj

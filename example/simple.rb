@@ -11,8 +11,14 @@ class X
 		self.name = name
 		self.age  = age
 	end
-	# Stitch method with Argument types.
+	# Register set method with Argument types.
 	stitch :set, [String, Integer]
+
+	# Register for next define method.
+	stitcher_require [Hash]
+	def set hash
+		set hash[:name], hash[:age]
+	end
 
 	# Define "set" method with Argument types.
 	# set(Integer, String)
@@ -21,7 +27,7 @@ class X
 		self.age  = age
 	}
 
-	# Define "set" method.
+	# Other define method
 	stitch.set(ary: [String, Integer]){
 		set *ary
 	}
@@ -39,6 +45,10 @@ x.age  = 14
 x.set "mami", 15
 x.print
 # => "name:mami age:15"
+
+x.set({ name: "saya", age: 14 })
+x.print
+# => "name:saya age:14"
 
 x.set 14, "mado"
 x.print
