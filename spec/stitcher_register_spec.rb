@@ -13,7 +13,6 @@ class Super
 end
 
 class X < Super
-
 	def initialize value
 		@value = value
 	end
@@ -32,6 +31,11 @@ class X < Super
 	stitcher_register :plus, [String] do |a|
 		@value + a.to_i
 	end
+
+	def func a, &block
+		a.map &block
+	end
+	stitcher_register :func, [Array]
 end
 
 describe "Stitcher::Register" do
@@ -49,6 +53,10 @@ describe "Stitcher::Register" do
 
 	it "X#plus(String, String)" do
 		expect(x.plus "42", "10").to eq "42:10"
+	end
+
+	it "X#func(Array) with block" do
+		expect(x.func([1, 2, 3]){ |it| it + it}).to eq [2, 4, 6]
 	end
 
 # 	it "X#plus(Other)" do
