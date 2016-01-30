@@ -25,10 +25,10 @@ def stitcher_test obj
 	end
 end
 
+using Stitcher::ClassOperators
 
 class TestExtend
 	extend Stitcher
-	using Stitcher::ClassOperators
 
 	stitcher_require [Object & !Fixnum]
 	def func a
@@ -155,8 +155,26 @@ describe "Stitcher" do
 		end
 	end
 
+
 	describe "Priority" do
-		
+		class TestPriority
+			stitcher_require [Object]
+			def func a
+				"Object"
+			end
+
+			stitcher_require [Numeric]
+			def func a
+				"Numeric"
+			end
+		end
+
+		obj = TestPriority.new
+		it "func" do
+			expect(obj.func 10).to eq "Numeric"
+			expect(obj.func 10.0).to eq "Numeric"
+			expect(obj.func "").to eq "Object"
+		end
 	end
 end
 

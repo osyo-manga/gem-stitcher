@@ -11,7 +11,7 @@ class X
 		self.name = name
 		self.age  = age
 	end
-	# Register set method with Argument types.
+	# Register set method with Argument types(Classes).
 	stitch :set, [String, Integer]
 
 	# Register for next define method.

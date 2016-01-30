@@ -6,6 +6,7 @@ require_relative "./stitcher/stitch"
 require_relative "./stitcher/class_operator"
 require_relative "./stitcher/require"
 require_relative "./stitcher/variadic_argument"
+require_relative "./stitcher/core"
 
 module Stitcher
 	include Accessor
@@ -23,4 +24,8 @@ module Stitcher
 	refine Array do
 		include VariadicArgument
 	end
+end
+
+class Module
+	include Stitcher::Core
 end
