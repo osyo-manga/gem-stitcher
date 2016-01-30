@@ -35,6 +35,15 @@ class X
 	def print
 		p "name:#{name} age:#{age}"
 	end
+
+	def print
+		p "name:#{name} age:#{age}"
+	end
+
+	stitcher_require [String]
+	def print fmt
+		printf(fmt, name, age)
+	end
 end
 
 x = X.new
@@ -55,6 +64,6 @@ x.print
 # => "name:mado age:14"
 
 x.set ["homu", 14]
-x.print
+x.print "%s-%s"
 # => "name:homu age:14"
 

@@ -1,4 +1,5 @@
 require_relative "./register"
+require_relative "./define_method"
 
 using Stitcher
 
@@ -7,9 +8,9 @@ module Stitcher module Accessor
 
 	def stitcher_writer **opt
 		opt.each { |name, type|
-			Register.stitcher_register(self, "#{name}=", [type]) do |var|
+			Register.register(self, "#{name}=", [type], (DefineMethod.as_instance_executable do |var|
 				instance_variable_set "@#{name}", var
-			end
+			end))
 # 			stitcher_register "#{name}=", [type] do |var|
 # 				instance_variable_set "@#{name}", var
 # 			end
