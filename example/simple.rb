@@ -3,7 +3,7 @@ require "stitcher"
 # Using stitcher library.
 using Stitcher
 
-class X
+class Person
 	# Define accessor with variable type(Class).
 	stitcher_accessor name: String, age: Integer
 
