@@ -109,6 +109,44 @@ end
 違うシグネチャを設定することで静的型付け言語のような多重定義を行うことができます。  
 これにより『引数のクラス』によって簡単に処理を分岐することができます。
 
+#### シグネチャの設定
+
+各引数のシグネチャは `#===` が定義されてるオブジェクトであればなんでも設定する事ができます。  
+これは Ruby の `case` 文と似ています。
+例えば、`Class` 以外にも `Proc` や `Regexp` などを渡すことができます。
+
+```ruby
+class Http
+	stitcher_require [/^https?/]
+	def post url
+		# ...
+	end
+
+	stitcher_require [ proc { |hash| (Hash === hash && hash.key?(:url)) } ]
+	def post hash
+		post hash[:url]
+	end
+end
+
+http = Http.new
+http.post "http://docs.ruby-lang.org/"				# OK
+http.post({ url: "http://docs.ruby-lang.org/" })	# OK
+
+http.post "ftp://docs.ruby-lang.org/"				# Error
+http.post({ uri: "http://docs.ruby-lang.org/" })	# Error
+```
+
+このようにしてより厳密な引数に対する要求を設定することができます。  
+また、`Class` や `Proc`、`Regexp` は `&` や `|` で結合することもできます。
+
+```ruby
+# Hash であることと Proc の条件を満たすことを要求する
+stitcher_require [Hash & proc { |hash| (hash.key?(:url)) } ]
+def post hash
+    post hash[:url]
+end
+```
+
 #### 多重定義字に呼び出されるメソッドの優先順位
 
 Stitcehr を利用してメソッドを多重定義した場合に呼び出されるメソッドの優先順位は __下から順に優先順位が高くなります。__  
