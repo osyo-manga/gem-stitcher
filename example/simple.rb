@@ -36,13 +36,10 @@ class X
 		p "name:#{name} age:#{age}"
 	end
 
-	def print
-		p "name:#{name} age:#{age}"
-	end
-
-	stitcher_require [String]
+	# Require format with block object.
+	stitcher_require [String] & Stitcher::Concepts.blockable
 	def print fmt
-		printf(fmt, name, age)
+		printf(fmt, *yield(name, age))
 	end
 end
 
@@ -60,10 +57,10 @@ x.print
 # => "name:saya age:14"
 
 x.set 14, "mado"
-x.print
-# => "name:mado age:14"
+x.print("%s-%s\n"){ |name, age| [name, age] }
+# => mado-14
 
 x.set ["homu", 14]
-x.print "%s-%s"
-# => "name:homu age:14"
+x.print("%s-%s\n"){ |name, age| [age, name] }
+# => 14-homu
 

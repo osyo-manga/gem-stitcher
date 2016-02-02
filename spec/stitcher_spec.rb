@@ -25,7 +25,7 @@ def stitcher_test obj
 	end
 end
 
-using Stitcher::ClassOperators
+using Stitcher::Operators
 
 class TestExtend
 	extend Stitcher
@@ -76,7 +76,7 @@ class TestRegister
 		a + b.to_i
 	end
 end
-stitcher_test TestRegister.new
+# stitcher_test TestRegister.new
 
 
 
@@ -174,6 +174,41 @@ describe "Stitcher" do
 			expect(obj.func 10).to eq "Numeric"
 			expect(obj.func 10.0).to eq "Numeric"
 			expect(obj.func "").to eq "Object"
+		end
+	end
+
+	describe "Accessor" do
+		class TestAccessor
+			stitcher_accessor name: String, age: Fixnum
+		end
+		obj = TestAccessor.new
+		it "success" do
+			obj.name = "homu"
+			obj.age  = 14
+			expect(obj.name).to eq "homu"
+			expect(obj.age ).to eq 14
+		end
+		it "failed" do
+			expect{ obj.name = 42     }.to raise_error NoMethodError
+			expect{ obj.age  = "homu" }.to raise_error NoMethodError
+		end
+	end
+
+	describe "DefineMethod" do
+		class TestDefineMethod
+			attr_accessor :name, :age
+
+			stitcher_define_method(:set, name: String, age: Fixnum){
+				self.name = name
+				self.age  = age
+			}
+		end
+		obj = TestDefineMethod.new
+
+		it "call method" do
+			obj.set("homu", 14)
+			expect(obj.name).to eq "homu"
+			expect(obj.age).to  eq 14
 		end
 	end
 end
