@@ -1,4 +1,4 @@
-# iolite
+# Stitcher
 
 ## これは何？
 
