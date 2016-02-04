@@ -19,7 +19,7 @@ module Stitcher module DefineMethod
 
 	def stitcher_define_method name, **opt, &block
 		obj = DefineMethod.as_instance_executable do |*args|
-			_ = args.pop # block
+			_ = args.pop		# block object
 			self_ = self
 			obj = Object.new
 			obj.extend(Module.new{
@@ -32,13 +32,13 @@ module Stitcher module DefineMethod
 					instance_variable_set "@#{name}", args[index]
 				}
 
-				define_singleton_method :[] do |name|
-					self_.instance_eval "@#{ name }"
-				end
-				
-				define_singleton_method :[]= do |name, var|
-					obj.instance_eval { self_.instance_variable_set "@#{name}", var }
-				end
+# 				define_singleton_method :[] do |name|
+# 					self_.instance_eval "@#{ name }"
+# 				end
+#
+# 				define_singleton_method :[]= do |name, var|
+# 					obj.instance_eval { self_.instance_variable_set "@#{name}", var }
+# 				end
 				
 				define_singleton_method :method_missing do |name, *args, &block|
 					self_.__send__ name, *args, &block

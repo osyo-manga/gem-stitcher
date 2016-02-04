@@ -12,7 +12,6 @@ end
 module Stitcher module Register
 	def self.define_call_method self_, name
 		self_.__send__ :define_method, name do |*args, &block|
-# 			_, method = mtable.find{|sig, _| sig == args.map(&:class) } || mtable.find {|sig, _| sig === args}
 			method = self_.stitcher_method_detecting name, *args, &block
 
 			return super(*args, &block) unless method

@@ -26,7 +26,6 @@ module Stitcher module Core
 	def stitcher_method_detecting name, *args, &block
 		mtable = stitcher_method_table(name).to_a.reverse
 		_, method = mtable.find {|sig, _| sig.=== args, &block }
-# 		_, method = mtable.find {|sig, _| sig.__send__(:===, args) }
 		method
 	end
 end end
