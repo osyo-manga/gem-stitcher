@@ -9,10 +9,6 @@ Gem::Specification.new do |spec|
   spec.authors       = ["manga_osyo"]
   spec.email         = ["manga.osyo@gmail.com"]
 
-  if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com' to prevent pushes to rubygems.org, or delete to allow pushes to any server."
-  end
-
   spec.summary       = %q{Typed Programing}
   spec.description   = %q{Typed Programing}
   spec.homepage      = "https://github.com/osyo-manga/gem-stitcher"
