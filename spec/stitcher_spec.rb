@@ -36,6 +36,11 @@ class TestExtend
 	end
 
 	def func a
+		a + a
+	end
+	stitcher_register :func, [String]
+
+	def func a
 		a.to_i + a.to_i
 	end
 	stitcher_register :func, [String]
@@ -63,6 +68,11 @@ class TestRegister
 	end
 
 	def func a
+		a + a
+	end
+	stitcher_register :func, [String]
+
+	def func a
 		a.to_i + a.to_i
 	end
 	stitcher_register :func, [String]
@@ -76,8 +86,7 @@ class TestRegister
 		a + b.to_i
 	end
 end
-# stitcher_test TestRegister.new
-
+stitcher_test TestRegister.new
 
 
 class TestPriority
@@ -209,6 +218,29 @@ describe "Stitcher" do
 			obj.set("homu", 14)
 			expect(obj.name).to eq "homu"
 			expect(obj.age).to  eq 14
+		end
+	end
+
+	describe "#hash が存在しない時" do
+		it "BasicObject" do
+			expect {
+				class NonHashMethod
+					class Req < BasicObject
+						def === n
+							::Kernel.p "homu"
+							::Kernel.p n
+							n < 10
+						end
+					end
+
+					stitcher_require [Req.new]
+					def homu aaa
+						
+					end
+				end
+			}.not_to raise_error
+			expect { NonHashMethod.new.homu 5 }.not_to raise_error
+			expect { NonHashMethod.new.homu 10 }.to raise_error(NoMethodError)
 		end
 	end
 end
