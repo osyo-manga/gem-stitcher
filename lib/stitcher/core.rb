@@ -9,7 +9,7 @@ using StitcherArrayEx
 
 module Stitcher module Core
 	def stitcher_method_table name
-		instance_eval { @stitcher_method_table ||= {}; @stitcher_method_table[name] ||= {} }
+		instance_eval { @stitcher_method_table ||= {}; @stitcher_method_table[name] ||= [] }
 	end
 	
 	def stitcher_method_table_all name
@@ -20,7 +20,7 @@ module Stitcher module Core
 
 	def stitcher_add name, sig, method
 		sig = (method.arity < 0 ? +([Object] * method.arity.abs) : [Object] * method.arity.abs) unless sig
-		stitcher_method_table(name)[sig] = method
+		stitcher_method_table(name) << [sig, method]
 	end
 
 	def stitcher_method_detecting name, *args, &block
