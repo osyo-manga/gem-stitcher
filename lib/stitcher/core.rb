@@ -1,31 +1,33 @@
-require_relative "./variadic_argument"
-
-module StitcherArrayEx
-	refine Array do
-		include Stitcher::VariadicArgument
-	end
-end
-using StitcherArrayEx
-
 module Stitcher module Core
-	def stitcher_method_table name
-		instance_eval { @stitcher_method_table ||= {}; @stitcher_method_table[name] ||= [] }
-	end
-	
-	def stitcher_method_table_all name
-		mtable = stitcher_method_table(name) unless superclass
-		return stitcher_method_table_all(superclass, name).merge(mtable) if superclass
-		mtable
+	using Module.new {
+		refine Array do
+			def === other
+				size == other.size && zip(other).all? { |a, b| a === b }
+			end
+		end
+	}
+
+	def self.bind obj
+		mod = self
+		Class.new(BasicObject) {
+			define_method :method_missing do |name, *args, &block|
+				mod.instance_method(name).bind(obj).call *args, &block
+			end
+		}.new
 	end
 
-	def stitcher_add name, sig, method
-		sig = (method.arity < 0 ? +([Object] * method.arity.abs) : [Object] * method.arity.abs) unless sig
-		stitcher_method_table(name) << [sig, method]
+	def stitcher_method_table
+		@stitcher_method_table ||= Hash.new { |hash, key| hash[key] = [] }
 	end
 
-	def stitcher_method_detecting name, *args, &block
-		mtable = stitcher_method_table(name).to_a.reverse
-		_, method = mtable.find {|sig, _| sig.=== args, &block }
-		method
+	def stitcher_register name, sig, imethod = instance_method(name)
+		methods = Core.bind(self).stitcher_method_table[name]
+		methods.unshift [sig, imethod]
+		define_method name do |*args, &block|
+			_, imethod = methods.find {|sig, _| sig.=== args, &block }
+			return super(*args, &block) unless imethod
+
+			imethod.bind(self).call *args, &block
+		end
 	end
 end end
