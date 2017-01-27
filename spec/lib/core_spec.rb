@@ -16,6 +16,6 @@ describe Stitcher::Core do
 				self
 			}
 		}
-		it_behaves_like "OK"
+# 		it_behaves_like "OK"
 	end
 end
