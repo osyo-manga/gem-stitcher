@@ -20,7 +20,7 @@ module Stitcher module Core
 		@stitcher_method_table ||= Hash.new { |hash, key| hash[key] = [] }
 	end
 
-	def stitcher_register name, sig, imethod = instance_method(name)
+	def stitcher_register sig, name, imethod = instance_method(name)
 		methods = Core.bind(self).stitcher_method_table[name]
 		methods.unshift [sig, imethod]
 		define_method name do |*args, &block|

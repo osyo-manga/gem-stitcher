@@ -29,7 +29,7 @@ describe Stitcher do
 					define_method(:call){ |*args|
 						sig.map(&:to_s).join(", ")
 					}
-					stitcher_register :call, sig
+					stitcher_register sig, :call
 				}
 			}.new
 		}
@@ -49,7 +49,7 @@ describe Stitcher do
 					define_method(:call){ |*args|
 						sig.map(&:to_s).join(", ")
 					}
-					stitcher_register :call, sig
+					stitcher_register sig, :call
 				}
 			}) {
 				[
@@ -60,7 +60,7 @@ describe Stitcher do
 					define_method(:call){ |*args|
 						sig.map(&:to_s).join(", ")
 					}
-					stitcher_register :call, sig
+					stitcher_register sig, :call
 				}
 			}.new
 		}
