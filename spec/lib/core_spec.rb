@@ -98,4 +98,44 @@ describe Stitcher::Core do
 			it { is_expected.to be_truthy }
 		end
 	end
+
+	context "#stitcher_define_method" do
+		context "インスタンス変数にアクセスする場合" do
+			let(:obj){
+				Class.new {
+					attr_accessor :value
+					stitcher_define_method [], :call do
+						@value = 42
+					end
+				}.new
+			}
+			it { expect { obj.call }.to change { obj.value }.from(nil).to(42) }
+		end
+	end
+
+	context "#stitcher_def" do
+		let(:obj){
+			Class.new {
+				attr_accessor :value
+				stitcher_def.call(a: Integer, b: String){
+					a.to_s + b
+				}
+
+				stitcher_def.call(value: Integer){
+					@value = value
+				}
+
+				stitcher_def.call {
+					self
+				}
+			}.new
+		}
+		subject { obj.method(:call) }
+		it { expect(subject.call 42, "homu").to eq "42homu" }
+		it { expect(subject.call).to eq obj }
+		it { expect(subject.call 42).to eq 42 }
+		it { expect{ subject.call 42 }.to change { obj.value }.from(nil).to(42) }
+		it { expect{ subject.call 42 }.to_not change { obj.singleton_class.ancestors } }
+		it { expect{ subject.call }.to_not change { obj.singleton_class.ancestors } }
+	end
 end

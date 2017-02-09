@@ -1,3 +1,10 @@
+require_relative "./core_refine"
+require "laurel"
+require "unmixer"
+
+using Stitcher::Refine::ProcUnbind
+using Unmixer
+
 module Stitcher module Core
 	using Module.new {
 		refine Array do
@@ -29,5 +36,25 @@ module Stitcher module Core
 
 			imethod.bind(self).call *args, &block
 		end
+	end
+
+
+	def stitcher_define_method sig, name, &block
+		define_method name, &block
+		Core.bind(self).stitcher_register sig, name
+	end
+
+	def stitcher_def
+		Laurel.proxy { |name, **sig, &block|
+			instance_eval {
+				Core.bind(self).stitcher_define_method sig.values, name do |*args, &block_|
+					extend(Module.new {
+						sig.keys.each_with_index { |name, i| private define_method(name){ args[i] } }
+					}) { |obj|
+						break block.rebind(obj).call &block_
+					}
+				end
+			}
+		}
 	end
 end end

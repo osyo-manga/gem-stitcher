@@ -2,68 +2,88 @@ require_relative './spec_helper'
 
 describe Stitcher do
 	shared_examples "多重定義の呼び出し" do
-		it { expect(subject.call()).to eq "" }
-		it { expect(subject.call("")).to eq "String" }
-		it { expect(subject.call(42)).to eq "Integer" }
-		it { expect(subject.call(1, 2)).to eq "Integer, Integer" }
-		it { expect(subject.call("", 0)).to eq "String, Integer" }
-		it { expect(subject.call(0, "")).to eq "Integer, String" }
-
-		it { expect{subject.call([])}.to raise_error(NoMethodError) }
-		it { expect{subject.call([], "")}.to raise_error(NoMethodError) }
-	end
-
-	context "多重定義の呼び出し" do
-		subject {
-			Class.new {
+		let(:obj) {
+			define_method_ = impl_define_method
+			Class.new(Class.new{ |klass|
 				extend Stitcher
 
+				[
+					[Numeric],
+					[Integer, Integer],
+					[Integer, String],
+				].each { |sig|
+					define_method_.call klass, sig, :call do |*args|
+						sig.map(&:to_s).join(", ")
+					end
+				}
+			}) { |klass|
 				[
 					[],
 					[Integer],
 					[String],
-					[Integer, Integer],
 					[String, Integer],
-					[Integer, String],
 				].each { |sig|
-					define_method(:call){ |*args|
+					define_method_.call klass, sig, :call do |*args|
 						sig.map(&:to_s).join(", ")
-					}
-					stitcher_register sig, :call
+					end
 				}
+				define_method_.call klass, proc { |n, _| Integer === n && n < 0 }, :call do |*args|
+					"Under zero"
+				end
 			}.new
 		}
-		it_behaves_like "多重定義の呼び出し"
+
+		it { expect(obj.call()).to eq "" }
+		it { expect(obj.call("")).to eq "String" }
+		it { expect(obj.call(42)).to eq "Integer" }
+		it { expect(obj.call(3.14)).to eq "Numeric" }
+		it { expect(obj.call(1, 2)).to eq "Integer, Integer" }
+		it { expect(obj.call(-3)).to eq "Under zero" }
+		it { expect(obj.call("", 0)).to eq "String, Integer" }
+		it { expect(obj.call(0, "")).to eq "Integer, String" }
+
+		it { expect{obj.call([])}.to raise_error(NoMethodError) }
+		it { expect{obj.call([], "")}.to raise_error(NoMethodError) }
 	end
 
-	context "親クラスのメソッド呼び出し" do
-		subject {
-			Class.new(Class.new{
-				extend Stitcher
+	context "Core#stticher_register" do
+		it_behaves_like "多重定義の呼び出し" do
+			let(:impl_define_method) {
+				proc { |klass, sig, name, &block|
+					klass.instance_eval {
+						define_method(name, &block)
+						stitcher_register sig, name
+					}
+				}
+			}
+		end
+	end
 
-				[
-					[Integer],
-					[Integer, Integer],
-					[Integer, String],
-				].each { |sig|
-					define_method(:call){ |*args|
-						sig.map(&:to_s).join(", ")
+	context "Core#stitcher_define_method" do
+		it_behaves_like "多重定義の呼び出し" do
+			let(:impl_define_method) {
+				proc { |klass, sig, name, &block|
+					klass.instance_eval {
+						stitcher_define_method(sig, name, &block)
 					}
-					stitcher_register sig, :call
 				}
-			}) {
-				[
-					[],
-					[String],
-					[String, Integer],
-				].each { |sig|
-					define_method(:call){ |*args|
-						sig.map(&:to_s).join(", ")
+			}
+		end
+	end
+
+	context "Core#stitcher_def" do
+		it_behaves_like "多重定義の呼び出し" do
+			let(:impl_define_method) {
+				proc { |klass, sig, name, &block|
+					klass.instance_eval {
+						if Array === sig
+							stitcher_def.__send__(name, Hash[[(:a..:z).to_a.take(sig.length), sig].transpose], &block)
+						else
+							stitcher_define_method(sig, name, &block)
+						end
 					}
-					stitcher_register sig, :call
 				}
-			}.new
-		}
-		it_behaves_like "多重定義の呼び出し"
+			}
+		end
 	end
 end
