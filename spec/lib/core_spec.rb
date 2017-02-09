@@ -125,6 +125,10 @@ describe Stitcher::Core do
 					@value = value
 				}
 
+				stitcher_def.call(value: String){
+					self.value = value
+				}
+
 				stitcher_def.call {
 					self
 				}
@@ -135,6 +139,7 @@ describe Stitcher::Core do
 		it { expect(subject.call).to eq obj }
 		it { expect(subject.call 42).to eq 42 }
 		it { expect{ subject.call 42 }.to change { obj.value }.from(nil).to(42) }
+		it { expect{ subject.call "homu" }.to change { obj.value }.from(nil).to("homu") }
 		it { expect{ subject.call 42 }.to_not change { obj.singleton_class.ancestors } }
 		it { expect{ subject.call }.to_not change { obj.singleton_class.ancestors } }
 	end
