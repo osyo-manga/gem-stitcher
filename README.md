@@ -110,7 +110,9 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ### v0.2.0
 
+* Refactoring all
 * Remove `Stitcher::Operators`
+* Change `#stitcher_define_method` arguments
 
 ### v0.1.0
 
