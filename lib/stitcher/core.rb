@@ -50,8 +50,8 @@ module Stitcher module Core
 				Core.bind(self).stitcher_define_method sig.values, name do |*args, &block_|
 					extend(Module.new {
 						sig.keys.each_with_index { |name, i| private define_method(name){ args[i] } }
-					}) { |obj|
-						break block.rebind(obj).call &block_
+					}) { |self_|
+						break block.rebind(self_).call &block_
 					}
 				end
 			}
