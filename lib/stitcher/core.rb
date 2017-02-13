@@ -40,8 +40,7 @@ module Stitcher module Core
 
 
 	def stitcher_define_method sig, name, &block
-		define_method name, &block
-		Core.bind(self).stitcher_register sig, name
+		Core.bind(self).stitcher_register sig, name, block.unbind
 	end
 
 	def stitcher_def
@@ -56,5 +55,18 @@ module Stitcher module Core
 				end
 			}
 		}
+	end
+
+	def stitcher_writer **opt
+		opt.each { |name, type|
+			Core.bind(self).stitcher_define_method([type], "#{name}="){ |var|
+				instance_variable_set "@#{name}", var
+			}
+		}
+	end
+
+	def stitcher_accessor **opt
+		attr_reader *opt.keys
+		Core.bind(self).stitcher_writer opt
 	end
 end end

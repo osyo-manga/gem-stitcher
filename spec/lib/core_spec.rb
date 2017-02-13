@@ -134,13 +134,32 @@ describe Stitcher::Core do
 				}
 			}.new
 		}
-		subject { obj.method(:call) }
-		it { expect(subject.call 42, "homu").to eq "42homu" }
-		it { expect(subject.call).to eq obj }
-		it { expect(subject.call 42).to eq 42 }
-		it { expect{ subject.call 42 }.to change { obj.value }.from(nil).to(42) }
-		it { expect{ subject.call "homu" }.to change { obj.value }.from(nil).to("homu") }
-		it { expect{ subject.call 42 }.to_not change { obj.singleton_class.ancestors } }
-		it { expect{ subject.call }.to_not change { obj.singleton_class.ancestors } }
+		it { expect(obj.call 42, "homu").to eq "42homu" }
+		it { expect(obj.call).to eq obj }
+		it { expect(obj.call 42).to eq 42 }
+		it { expect{ obj.call 42 }.to change { obj.value }.from(nil).to(42) }
+		it { expect{ obj.call "homu" }.to change { obj.value }.from(nil).to("homu") }
+		it { expect{ obj.call 42 }.to_not change { obj.singleton_class.ancestors } }
+		it { expect{ obj.call }.to_not change { obj.singleton_class.ancestors } }
+	end
+
+	context "#stitcher_accessor" do
+		let(:obj){
+			Class.new {
+				stitcher_accessor name: String, age: Integer
+			}.new
+		}
+		before do
+			obj.name = "mami"
+			obj.age  = 14
+		end
+		it { expect(obj.name).to eq "mami" }
+		it { expect(obj.age ).to eq 14 }
+		it { expect(obj.name = "homu").to eq "homu" }
+		it { expect(obj.age = 13).to eq 13 }
+		it { expect { obj.name = "homu" }.to change{ obj.name }.from("mami").to("homu") }
+		it { expect { obj.age  = 13 }.to change{ obj.age }.from(14).to(13) }
+		it { expect { obj.name = 14 }.to raise_error(NoMethodError) }
+		it { expect { obj.age = "mami" }.to raise_error(NoMethodError) }
 	end
 end
