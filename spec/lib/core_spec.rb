@@ -143,6 +143,38 @@ describe Stitcher::Core do
 		it { expect{ obj.call }.to_not change { obj.singleton_class.ancestors } }
 	end
 
+	context "#stitcher_require" do
+		let(:obj){
+			Class.new {
+				def self.method_added name
+					@latest_method = name
+				end
+
+				stitcher_require [Integer]
+				def call a
+					a + a
+				end
+			}.new
+		}
+		it { expect(obj.call 42).to eq 84 }
+		it { expect{
+			obj.class.class_eval {
+				def homu
+					
+				end
+			}
+		}.to change{ obj.class.instance_eval{ @latest_method } }.from(:call).to(:homu) }
+
+		it { expect{
+			obj.class.class_eval {
+				stitcher_require [String]
+				def mami a
+					
+				end
+			}
+		}.to change{ obj.class.instance_eval{ @latest_method } }.from(:call).to(:mami) }
+	end
+
 	context "#stitcher_accessor" do
 		let(:obj){
 			Class.new {
