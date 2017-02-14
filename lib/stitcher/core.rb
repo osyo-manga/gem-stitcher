@@ -59,7 +59,7 @@ module Stitcher module Core
 
 	def stitcher_require sig
 		mod = Module.new {
-			define_method :method_added { |name|
+			define_method(:method_added){ |name|
 				singleton_class.instance_eval { unprepend(mod) }
 				Core.bind(self).stitcher_register sig, name
 			}
