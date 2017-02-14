@@ -1,40 +1,66 @@
 require "stitcher"
 
-class X
+# Using stitcher library.
+using Stitcher
+
+class Person
 	extend Stitcher
+	# Define accessor with variable type(Class).
+	stitcher_accessor name: String, age: Integer
 
-	def func
-		""
+	def set name, age
+		self.name = name
+		self.age  = age
 	end
-	stitcher_register :func, []
+	# Register set method with Argument types(Classes).
+	stitcher_register [String, Integer], :set
 
-	def func a, b
-		"Integer, String"
+	# Register for next define method.
+	stitcher_require [Hash]
+	def set hash
+		set hash[:name], hash[:age]
 	end
-	stitcher_register :func, [Integer, String]
 
-	def func a, b
-		"Integer, Array"
-	end
-	stitcher_register :func, [Integer, Array]
+	# Define "set" method with Argument types.
+	stitcher_define_method([Array], :set){ |ary|
+		set *ary
+	}
 
-	def func a
-		"Integer"
+	# Define arugment wit name
+	stitcher_def.set(age: Integer, name: String){
+		self.name = name
+		self.age  = age
+	}
+
+	stitcher_require []
+	def print
+		p "name:#{name} age:#{age}"
 	end
-	stitcher_register :func, [Integer]
+
+	stitcher_require proc { |&block| block }
+	def print fmt
+		printf(fmt, *yield(name, age))
+	end
 end
 
-x = X.new
+person = Person.new
+person.name = "homu"
+person.age  = 14
+# person.age = 14.0		# Error: No match method.
 
-p x.func
-# => ""
+person.set "mami", 15
+person.print
+# => "name:mami age:15"
 
-p x.func 42, "homu"
-# => "Integer,String"
+person.set({ name: "saya", age: 14 })
+person.print
+# => "name:saya age:14"
 
-p x.func 42, []
-# => "Integer, Array"
+person.set 14, "mado"
+person.print("%s-%s\n"){ |name, age| [name, age] }
+# => mado-14
 
-p x.func 42
-# => "Integer"
+person.set ["homu", 14]
+person.print("%s-%s\n"){ |name, age| [age, name] }
+# => 14-homu
 
