@@ -8,8 +8,8 @@ using Unmixer
 module Stitcher module Core
 	using Module.new {
 		refine Array do
-			def === other
-				size == other.size && zip(other).all? { |a, b| a === b }
+			def === other, &block
+				size == other.size && zip(other).all? { |a, b| a.=== b, &block }
 			end
 		end
 	}
@@ -55,6 +55,16 @@ module Stitcher module Core
 				end
 			}
 		}
+	end
+
+	def stitcher_require sig
+		mod = Module.new {
+			define_method :method_added { |name|
+				singleton_class.instance_eval { unprepend(mod) }
+				Core.bind(self).stitcher_register sig, name
+			}
+		}
+		singleton_class.prepend(mod)
 	end
 
 	def stitcher_writer **opt
