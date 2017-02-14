@@ -86,4 +86,18 @@ describe Stitcher do
 			}
 		end
 	end
+
+	context "Core#stitcher_require" do
+		it_behaves_like "多重定義の呼び出し" do
+			let(:impl_define_method) {
+				proc { |klass, sig, name, &block|
+					klass.instance_eval {
+						stitcher_require sig
+						define_method name, &block
+					}
+				}
+			}
+		end
+	end
+
 end
