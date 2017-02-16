@@ -4,7 +4,6 @@ require "stitcher"
 using Stitcher
 
 class Person
-	extend Stitcher
 	# Define accessor with variable type(Class).
 	stitcher_accessor name: String, age: Integer
 
@@ -13,6 +12,8 @@ class Person
 		self.age  = age
 	end
 	# Register set method with Argument types(Classes).
+	# stitcher_register signature, method_name
+	# signature request #=== method.
 	stitcher_register [String, Integer], :set
 
 	# Register for next define method.
@@ -37,6 +38,7 @@ class Person
 		p "name:#{name} age:#{age}"
 	end
 
+	# signature to Proc object.
 	stitcher_require proc { |&block| block }
 	def print fmt
 		printf(fmt, *yield(name, age))
@@ -63,4 +65,3 @@ person.print("%s-%s\n"){ |name, age| [name, age] }
 person.set ["homu", 14]
 person.print("%s-%s\n"){ |name, age| [age, name] }
 # => 14-homu
-
