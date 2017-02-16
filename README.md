@@ -31,7 +31,6 @@ require "stitcher"
 using Stitcher
 
 class Person
-	extend Stitcher
 	# Define accessor with variable type(Class).
 	stitcher_accessor name: String, age: Integer
 
