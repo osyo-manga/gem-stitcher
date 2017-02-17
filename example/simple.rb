@@ -38,8 +38,8 @@ class Person
 		p "name:#{name} age:#{age}"
 	end
 
-	# signature to Proc object.
-	stitcher_require proc { |&block| block }
+	# Require block
+	stitcher_require Stitcher::Concepts.blockable
 	def print fmt
 		printf(fmt, *yield(name, age))
 	end
