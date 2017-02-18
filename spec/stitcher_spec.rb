@@ -99,5 +99,4 @@ describe Stitcher do
 			}
 		end
 	end
-
 end
